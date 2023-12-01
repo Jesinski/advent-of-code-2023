@@ -1,37 +1,42 @@
 import { readFileSync } from "fs";
+import path from "path";
 
-const file = readFileSync("./input.txt", "utf-8");
+const inputFile = readFileSync(path.join(__dirname, "input.txt"), "utf-8");
+const lines = inputFile.split("\n");
 
 let calibrationSum = 0;
 
-for (const line of file.split("\n")) {
-  let lDigit = "";
-  let rDigit = "";
-  let l = 0;
-  let r = line.length - 1;
+for (const line of lines) {
+  // Keep the digit as string to concatenate later
+  let leftmostDigit = "";
+  let rightmostDigit = "";
+  let leftIndex = 0;
+  let rightIndex = line.length - 1;
 
-  for (let i = 0; i < line.length; i++) {
-    if (lDigit === "") {
-      if (!isNaN(+line.charAt(l))) {
-        lDigit = line.charAt(l);
+  while (leftmostDigit === "" || rightmostDigit === "") {
+    if (leftmostDigit === "") {
+      const char = line.charAt(leftIndex);
+
+      if (!isNaN(+char)) {
+        leftmostDigit = char;
       } else {
-        l++;
+        leftIndex++;
       }
     }
-    if (rDigit === "") {
-      if (!isNaN(+line.charAt(r))) {
-        rDigit = line.charAt(r);
+
+    if (rightmostDigit === "") {
+      const char = line.charAt(rightIndex);
+
+      if (!isNaN(+char)) {
+        rightmostDigit = char;
       } else {
-        r--;
+        rightIndex--;
       }
     }
   }
 
-  const value = +(lDigit + rDigit);
-  console.log(value);
-  calibrationSum += value;
+  // Concatenate the strings, then cast it to number
+  calibrationSum += +(leftmostDigit + rightmostDigit);
 }
 
-console.log({ calibrationSum });
-
-// Correct Solution = 55834
+console.log({ expectedResult: 55834, result: calibrationSum });
