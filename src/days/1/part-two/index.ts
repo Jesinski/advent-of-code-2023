@@ -1,8 +1,10 @@
 import { readFileSync } from "fs";
+import path from "path";
 
-const file = readFileSync("./input.txt", "utf-8");
+const inputFile = readFileSync(path.join(__dirname, "input.txt"), "utf-8");
+const lines = inputFile.split("\n");
 
-const DIGITS = new Map<string, string>([
+const WORDS_TO_DIGITS = new Map<string, string>([
   ["one", "1"],
   ["two", "2"],
   ["three", "3"],
@@ -13,56 +15,52 @@ const DIGITS = new Map<string, string>([
   ["eight", "8"],
   ["nine", "9"],
 ]);
+
 let calibrationSum = 0;
 
-for (const line of file.split("\n")) {
-  let lDigit: string = "";
-  let lIndex = line.length - 1;
+for (const line of lines) {
+  let leftmostDigit = "";
+  let leftIndex = line.length - 1;
 
-  let rDigit: string = "";
-  let rIndex = 0;
+  let rightmostDigit = "";
+  let rightIndex = 0;
 
-  let l = 0;
-  let r = line.length - 1;
+  WORDS_TO_DIGITS.forEach((value, key) => {
+    const firstIndex = line.indexOf(key);
+    const lastIndex = line.lastIndexOf(key);
 
-  DIGITS.forEach((value, key) => {
-    const index = line.indexOf(key);
-    const index2 = line.lastIndexOf(key);
-
-    if (index != -1) {
-      if (index < lIndex) {
-        lIndex = index;
-        lDigit = value;
+    if (firstIndex != -1) {
+      if (firstIndex < leftIndex) {
+        leftIndex = firstIndex;
+        leftmostDigit = value;
       }
     }
-    if (index2 > rIndex) {
-      rIndex = index2;
-      rDigit = value;
+
+    if (lastIndex > rightIndex) {
+      rightIndex = lastIndex;
+      rightmostDigit = value;
     }
-    // console.log(line, key, line.indexOf(key));
   });
 
-  while (lIndex >= 0) {
-    if (!isNaN(+line.charAt(lIndex))) {
-      lDigit = line.charAt(lIndex);
+  while (leftIndex >= 0) {
+    const char = line.charAt(leftIndex);
+    if (!isNaN(+char)) {
+      leftmostDigit = char;
     }
-    lIndex--;
+    leftIndex--;
   }
 
-  while (rIndex <= line.length - 1) {
-    if (!isNaN(+line.charAt(rIndex))) {
-      rDigit = line.charAt(rIndex);
+  while (rightIndex <= line.length - 1) {
+    const char = line.charAt(rightIndex);
+    if (!isNaN(+char)) {
+      const char = line.charAt(rightIndex);
+      rightmostDigit = char;
     }
-    rIndex++;
+    rightIndex++;
   }
 
-  // console.log({ lDigit, lIndex, rDigit, rIndex });
-
-  const value = +(lDigit + rDigit);
-  console.log({ [line]: value });
-  calibrationSum += value;
+  // Concatenate the strings, then cast it to number
+  calibrationSum += +(leftmostDigit + rightmostDigit);
 }
-// { '45five7fivegpzhcfbbfiveqhnhhzdqtnltgnkrxz': 47 }
-console.log({ calibrationSum });
 
-// Correct Solution = 53221
+console.log({ expectedResult: 53221, result: calibrationSum });
