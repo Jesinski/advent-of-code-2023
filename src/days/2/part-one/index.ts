@@ -4,31 +4,39 @@ import path from "path";
 const inputFile = readFileSync(path.join(__dirname, "input.txt"), "utf-8");
 const lines = inputFile.split("\n");
 
+// Split by either "," or ";"
+const gameRoundsRegex = /,|;/g;
+// Match one or more consecutive digits
+const numberRegex = /\d+/g;
+// Match one or more consecutive capitalized or not letters
+const cubeColorRegex = /[a-zA-Z]+/g;
+
 const LIMIT: { [key: string]: number } = {
   red: 12,
   green: 13,
   blue: 14,
 } as const;
 
-let accumultor = 0;
+let accumulator = 0;
 
 for (const line of lines) {
-  const gameNumber = +line.slice(0, line.indexOf(":")).match(/\d+/g)![0];
-  const rounds = line.slice(line.indexOf(":") + 1).split(/,|;/g);
+  const gameNumber = +line.slice(0, line.indexOf(":")).match(numberRegex)![0];
+  const rounds = line.slice(line.indexOf(":") + 1).split(gameRoundsRegex);
 
-  console.log({ gameNumber, rounds });
-
-  let isValid = true;
+  let isPossible = true;
   for (const round of rounds) {
-    const amount = +round.match(/\d+/g)![0];
-    const cubeColor = round.match(/[a-zA-Z]+/g)![0];
-    console.log({ amount, cubeColor, limit: LIMIT[cubeColor] });
+    const amount = +round.match(numberRegex)![0];
+    const cubeColor = round.match(cubeColorRegex)![0];
 
     if (amount > LIMIT[cubeColor]) {
-      isValid = false;
+      isPossible = false;
+      break;
     }
   }
-  if (isValid) accumultor += gameNumber;
+
+  if (isPossible) {
+    accumulator += gameNumber;
+  }
 }
 
-console.log({ expectedResult: 2541, result: accumultor });
+console.log({ expectedResult: 2541, result: accumulator });
