@@ -21,8 +21,9 @@ for (let y = 0; y < lines.length; y++) {
   while ((array1 = regex.exec(lines[y])) !== null) {
     console.log("processing number...", array1[0]);
     shouldSum = false;
-    for (const digit of array1[0]) {
-      const x = lines[y].indexOf(digit, indexSearching);
+    for (let i = 0; i < array1[0].length; i++) {
+      // for (const digit of array1[0]) {
+      const x = lines[y].indexOf(array1[0], indexSearching) + i;
 
       // indexSearching = x;
       if (lines[y - 1] && lines[y - 1][x - 1])
