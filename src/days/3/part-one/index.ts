@@ -7,21 +7,24 @@ const lines = inputFile.split("\n");
 const symbolsRegex = /[^a-zA-Z0-9.\n]+/g;
 let accumulator = 0;
 for (let y = 0; y < lines.length; y++) {
-  const regex = /\d+/g;
-  const numbers = lines[y].match(regex);
+  const regex = RegExp(/\d+/, "g");
+  const numbers = lines[y].matchAll(regex);
   // [ '467', '114' ]
 
   if (!numbers) {
     continue;
   }
 
+  let array1;
+  let indexSearching = 0;
   let shouldSum = false;
-  for (const number of numbers) {
-    console.log("processing number...", number);
+  while ((array1 = regex.exec(lines[y])) !== null) {
+    console.log("processing number...", array1[0]);
     shouldSum = false;
-    for (const digit of number) {
-      const x = lines[y].indexOf(digit);
+    for (const digit of array1[0]) {
+      const x = lines[y].indexOf(digit, indexSearching);
 
+      // indexSearching = x;
       if (lines[y - 1] && lines[y - 1][x - 1])
         if (lines[y - 1][x - 1].match(symbolsRegex) != null) {
           console.log(y, "ok1");
@@ -72,10 +75,11 @@ for (let y = 0; y < lines.length; y++) {
         }
     }
 
-    console.log("finished processing number...", number);
+    console.log("finished processing number...", array1[0]);
     console.log("found adjacent symbol?", shouldSum);
+    indexSearching = regex.lastIndex;
     if (shouldSum) {
-      accumulator += +number;
+      accumulator += +array1[0];
     }
   }
 }
