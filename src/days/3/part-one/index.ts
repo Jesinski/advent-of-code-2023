@@ -85,4 +85,4 @@ for (let y = 0; y < lines.length; y++) {
   }
 }
 
-console.log({ expectedResult: 4361, result: accumulator });
+console.log({ expectedResult: 514969, result: accumulator });
