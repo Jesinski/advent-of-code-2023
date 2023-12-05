@@ -43,7 +43,7 @@ for (const seed of seeds) {
   );
 }
 
-console.log({ expectedResult: 35, result: lowestLocation });
+console.log({ expectedResult: 196167384, result: lowestLocation });
 
 function getMap(line: number) {
   return lines[line]
