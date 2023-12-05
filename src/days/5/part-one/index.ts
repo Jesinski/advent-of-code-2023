@@ -4,7 +4,7 @@ import path from "path";
 const inputFile = readFileSync(path.join(__dirname, "input.txt"), "utf-8");
 const lines = inputFile.split("\n\n");
 
-console.log(lines);
+// console.log(lines);
 
 type SourceToDestination = {
   destination: number;
@@ -65,11 +65,20 @@ function getDestination(
   sourceToDestination: SourceToDestination[],
   source: number
 ): number {
-  sourceToDestination.forEach((entry) => {
-    if (source >= entry.source && source < entry.source + entry.range) {
-      source = source + entry.difference;
+  // console.log({ source });
+  for (let i = 0; i < sourceToDestination.length; i++) {
+    if (
+      source >= sourceToDestination[i].source &&
+      source <= sourceToDestination[i].source + sourceToDestination[i].range
+    ) {
+      // console.log({ sTD: sourceToDestination[i] });
+      // console.log("exit:", source + sourceToDestination[i].difference, "\n");
+
+      return source + sourceToDestination[i].difference;
     }
-  });
+  }
+
+  console.log("exit:", source, "\n");
 
   return source;
 }
