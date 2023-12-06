@@ -8,14 +8,11 @@ const times = lines[0].match(/\d+/g)?.map((value) => +value) || [];
 const distances = lines[1].match(/\d+/g)?.map((value) => +value) || [];
 const accumulator = new Array(distances.length).fill(0);
 
-console.log({ times, distances });
-
 for (let i = 0; i < times.length; i++) {
   for (let timeHolding = 0; timeHolding < times[i]; timeHolding++) {
     const speed = timeHolding;
     const remainingTime = times[i] - timeHolding;
 
-    console.log({ speed, remainingTime });
     if (speed * remainingTime > distances[i]) {
       accumulator[i]++;
     }
@@ -23,4 +20,4 @@ for (let i = 0; i < times.length; i++) {
 }
 
 const result = accumulator.reduce((prev, curr) => prev * curr, 1);
-console.log({ expectedResult: 0, result: result });
+console.log({ expectedResult: 840336, result: result });
