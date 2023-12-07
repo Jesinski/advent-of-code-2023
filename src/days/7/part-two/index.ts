@@ -7,7 +7,7 @@ let accumulator = 0;
 
 enum CARD_VALUES {
   "T" = 10,
-  "J" = 11,
+  "J" = 1,
   "Q" = 12,
   "K" = 13,
   "A" = 14,
@@ -32,17 +32,23 @@ class Hand {
     this.bid = +bid;
     this.cards = cards;
 
+    let jCount = 0;
     const map = new Map<string, number>();
     for (const card of cards) {
       if (map.has(card)) {
         const curr = map.get(card)! + 1;
+        if (card === "J") jCount = curr;
         map.set(card, curr);
       } else {
+        if (card === "J") jCount = 1;
         map.set(card, 1);
       }
     }
 
-    switch (map.size) {
+    console.log({ [cards]: jCount });
+    const haveJ = jCount === 0 ? 0 : 1;
+    switch (map.size - haveJ) {
+      case 0:
       case 1:
         this.type = HAND_TYPES.FIVE_OF_KIND;
         break;
@@ -50,7 +56,7 @@ class Hand {
         this.type = HAND_TYPES.FULL_HOUSE;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [_, value] of map) {
-          if (value === 4) {
+          if (value + jCount === 4) {
             this.type = HAND_TYPES.FOUR_OF_KIND;
           }
         }
@@ -59,7 +65,7 @@ class Hand {
         this.type = HAND_TYPES.TWO_PAIR;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [_, value] of map) {
-          if (value === 3) {
+          if (value + jCount === 3) {
             this.type = HAND_TYPES.THREE_OF_KIND;
           }
         }
@@ -144,4 +150,4 @@ for (let i = 0; i < hands.length; i++) {
   accumulator += hands[i].getRank() * hands[i].getBid();
 }
 console.log(hands);
-console.log({ expectedResult: 5905, result: accumulator });
+console.log({ expectedResult: 254494947, result: accumulator });
