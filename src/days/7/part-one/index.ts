@@ -48,6 +48,7 @@ class Hand {
         break;
       case 2:
         this.type = HAND_TYPES.FULL_HOUSE;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [_, value] of map) {
           if (value === 4) {
             this.type = HAND_TYPES.FOUR_OF_KIND;
@@ -56,6 +57,7 @@ class Hand {
         break;
       case 3:
         this.type = HAND_TYPES.TWO_PAIR;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [_, value] of map) {
           if (value === 3) {
             this.type = HAND_TYPES.THREE_OF_KIND;
@@ -117,11 +119,11 @@ hands = hands.sort((handA, handB) => {
     let result: number = 0;
     while (i < 5) {
       const charAAtI = isNaN(+cardsA[i])
-        ? +CARD_VALUES[cardsA[i] as any]
+        ? +CARD_VALUES[cardsA[i] as keyof typeof CARD_VALUES]
         : +cardsA[i];
 
       const charBAtI = isNaN(+cardsB[i])
-        ? +CARD_VALUES[cardsB[i] as any]
+        ? +CARD_VALUES[cardsB[i] as keyof typeof CARD_VALUES]
         : +cardsB[i];
 
       // console.log({ charAAtI, charBAtI });
