@@ -73,12 +73,6 @@ class Hand {
     }
   }
 
-  toString(): string {
-    return `Hand: ${this.cards} ${HAND_TYPES[this.type]}\nBided ${
-      this.bid
-    } with Rank ${this.rank}`;
-  }
-
   getType(): HAND_TYPES {
     return this.type;
   }
@@ -95,7 +89,7 @@ class Hand {
     return this.bid;
   }
 }
-console.log("reading");
+
 let hands: Hand[] = [];
 for (const line of lines) {
   const [cards, bid] = line.split(" ");
@@ -103,15 +97,11 @@ for (const line of lines) {
   hands.push(newHand);
 }
 
-console.log("lets sort");
 hands = hands.sort((handA, handB) => {
   return handA.getType() - handB.getType();
 });
-console.log(hands);
 
-console.log("lets sort again");
 hands = hands.sort((handA, handB) => {
-  // console.log({ handA, handB });
   if (handA.getType() === handB.getType()) {
     const cardsA = handA.getCards();
     const cardsB = handB.getCards();
@@ -126,8 +116,6 @@ hands = hands.sort((handA, handB) => {
         ? +CARD_VALUES[cardsB[i] as keyof typeof CARD_VALUES]
         : +cardsB[i];
 
-      // console.log({ charAAtI, charBAtI });
-
       if (charAAtI != charBAtI) {
         result = charAAtI - charBAtI;
         break;
@@ -139,15 +127,12 @@ hands = hands.sort((handA, handB) => {
     return 0;
   }
 });
-console.log(hands);
 
-console.log("almost there");
 for (let i = 0; i < hands.length; i++) {
   hands[i].setRank(hands[i].getRank() + i);
 }
-console.log("one last step");
+
 for (let i = 0; i < hands.length; i++) {
   accumulator += hands[i].getRank() * hands[i].getBid();
 }
-console.log(hands);
 console.log({ expectedResult: 253866470, result: accumulator });

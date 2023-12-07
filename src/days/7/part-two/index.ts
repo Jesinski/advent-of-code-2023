@@ -45,7 +45,6 @@ class Hand {
       }
     }
 
-    console.log({ [cards]: jCount });
     const haveJ = jCount === 0 ? 0 : 1;
     switch (map.size - haveJ) {
       case 0:
@@ -79,12 +78,6 @@ class Hand {
     }
   }
 
-  toString(): string {
-    return `Hand: ${this.cards} ${HAND_TYPES[this.type]}\nBided ${
-      this.bid
-    } with Rank ${this.rank}`;
-  }
-
   getType(): HAND_TYPES {
     return this.type;
   }
@@ -101,7 +94,6 @@ class Hand {
     return this.bid;
   }
 }
-console.log("reading");
 let hands: Hand[] = [];
 for (const line of lines) {
   const [cards, bid] = line.split(" ");
@@ -109,7 +101,6 @@ for (const line of lines) {
   hands.push(newHand);
 }
 
-console.log("lets sort");
 hands = hands.sort((handA, handB) => {
   return handA.getType() - handB.getType();
 });
@@ -141,13 +132,10 @@ hands = hands.sort((handA, handB) => {
   }
 });
 
-console.log("almost there");
 for (let i = 0; i < hands.length; i++) {
   hands[i].setRank(hands[i].getRank() + i);
 }
-console.log("one last step");
 for (let i = 0; i < hands.length; i++) {
   accumulator += hands[i].getRank() * hands[i].getBid();
 }
-console.log(hands);
 console.log({ expectedResult: 254494947, result: accumulator });
