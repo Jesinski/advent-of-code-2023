@@ -46,20 +46,19 @@ console.log({ xLength: yLength, yLength: xLength });
 printGrid(grid);
 console.log({ expectedResult: 0, result: 0 });
 
-// find all galaxies (not wokring)
-// for (let x = 0; x < xLength; x++) {
-//   for (let y = 0; y < yLength; y++) {
-//     if (grid[x][y] != ".") {
-//       galaxies.push({
-//         id: grid[x][y],
-//         y: x,
-//         x: y,
-//         distance: new Map<string, number>(),
-//       });
-//     }
-//   }
-// }
-galaxies.push({ id: "1", y: 0, x: 4, distance: new Map() });
+for (let x = 0; x < xLength; x++) {
+  for (let y = 0; y < yLength; y++) {
+    if (grid[x][y] != ".") {
+      galaxies.push({
+        id: grid[x][y],
+        y: x,
+        x: y,
+        distance: new Map<string, number>(),
+      });
+    }
+  }
+}
+// galaxies.push({ id: "1", y: 0, x: 4, distance: new Map() });
 console.log({ galaxies });
 
 const DIRECTIONS: { [key: string]: [number, number] } = {
@@ -68,7 +67,7 @@ const DIRECTIONS: { [key: string]: [number, number] } = {
   LEFT: [0, -1],
   RIGHT: [0, 1],
 } as const;
-let unvisitedNodes: number[][] = [];
+let unvisitedNodes: string[] = [];
 let visited: string[] = [];
 let steps = 0;
 for (const galaxy of galaxies) {
@@ -81,12 +80,12 @@ for (const galaxy of galaxies) {
   console.log(unvisitedNodes);
 
   while (unvisitedNodes.length > 0) {
-    const next = unvisitedNodes.shift() as unknown as number[];
+    const next = (unvisitedNodes.shift() as string).split(",").map((e) => +e);
     steps++;
-    grid[next[0]][next[1]] = "V";
-    printGrid(grid);
+    // grid[next[0]][next[1]] = "V";
+    // printGrid(grid);
 
-    visited.push(String(next[0] + String(next[1])));
+    visited.push(String(next));
     unvisitedNodes.push(...getUnvisited(next));
   }
 
@@ -103,49 +102,52 @@ for (const galaxy of galaxies) {
 //   console.log();
 // }
 
-function getUnvisited(pos: number[]): number[][] {
-  const nodes: number[][] = [];
+function getUnvisited(pos: number[]): string[] {
+  const nodes: string[] = [];
   const up = DIRECTIONS.UP;
-  if (canVisit(pos, up)) nodes.push([pos[0] + up[0], pos[1] + up[1]]);
+  if (canVisit(pos, up)) nodes.push(String([pos[0] + up[0], pos[1] + up[1]]));
 
   const down = DIRECTIONS.DOWN;
-  if (canVisit(pos, down)) nodes.push([pos[0] + down[0], pos[1] + down[1]]);
+  if (canVisit(pos, down))
+    nodes.push(String([pos[0] + down[0], pos[1] + down[1]]));
 
   const left = DIRECTIONS.LEFT;
-  if (canVisit(pos, left)) nodes.push([pos[0] + left[0], pos[1] + left[1]]);
+  if (canVisit(pos, left))
+    nodes.push(String([pos[0] + left[0], pos[1] + left[1]]));
 
   const right = DIRECTIONS.RIGHT;
-  if (canVisit(pos, right)) nodes.push([pos[0] + right[0], pos[1] + right[1]]);
+  if (canVisit(pos, right))
+    nodes.push(String([pos[0] + right[0], pos[1] + right[1]]));
 
   return nodes;
 }
 
-function runGrid(pos: number[] | undefined) {
-  while (pos != undefined) {
-    visited.push(String(pos[0] + String(pos[1])));
-    grid[pos[0]][pos[1]] = "V";
-    printGrid(grid);
-    steps++;
-    pos = getNextPos(pos);
-  }
-  console.log();
-}
+// function runGrid(pos: number[] | undefined) {
+//   while (pos != undefined) {
+//     visited.push(String(pos[0] + String(pos[1])));
+//     grid[pos[0]][pos[1]] = "V";
+//     printGrid(grid);
+//     steps++;
+//     pos = getNextPos(pos);
+//   }
+//   console.log();
+// }
 
-function getNextPos(pos: number[]) {
-  const up = DIRECTIONS.UP;
-  if (canVisit(pos, up)) return [pos[0] + up[0], pos[1] + up[1]];
+// function getNextPos(pos: number[]) {
+//   const up = DIRECTIONS.UP;
+//   if (canVisit(pos, up)) return [pos[0] + up[0], pos[1] + up[1]];
 
-  const down = DIRECTIONS.DOWN;
-  if (canVisit(pos, down)) return [pos[0] + down[0], pos[1] + down[1]];
+//   const down = DIRECTIONS.DOWN;
+//   if (canVisit(pos, down)) return [pos[0] + down[0], pos[1] + down[1]];
 
-  const left = DIRECTIONS.LEFT;
-  if (canVisit(pos, left)) return [pos[0] + left[0], pos[1] + left[1]];
+//   const left = DIRECTIONS.LEFT;
+//   if (canVisit(pos, left)) return [pos[0] + left[0], pos[1] + left[1]];
 
-  const right = DIRECTIONS.RIGHT;
-  if (canVisit(pos, right)) return [pos[0] + right[0], pos[1] + right[1]];
+//   const right = DIRECTIONS.RIGHT;
+//   if (canVisit(pos, right)) return [pos[0] + right[0], pos[1] + right[1]];
 
-  return undefined;
-}
+//   return undefined;
+// }
 
 function canVisit(pos: number[], t: [number, number]) {
   const nextY = pos[0] + t[0];
@@ -153,7 +155,8 @@ function canVisit(pos: number[], t: [number, number]) {
   return (
     grid[nextY] !== undefined &&
     grid[nextY][nextX] !== undefined &&
-    !visited.includes(String(nextY) + String(nextX))
+    !unvisitedNodes.includes(String([nextY, nextX])) &&
+    !visited.includes(String([nextY, nextX]))
   );
 }
 
