@@ -15,10 +15,10 @@ const STEP = {
 const startingIndex = inputFile.indexOf("S");
 let visited: number[] = [startingIndex];
 const directions: { [key: string]: { startingPos: number; steps: number } } = {
-  left: { startingPos: startingIndex + STEP.LEFT, steps: 0 },
-  right: { startingPos: startingIndex + STEP.RIGHT, steps: 0 },
+  // left: { startingPos: startingIndex + STEP.LEFT, steps: 0 },
+  // right: { startingPos: startingIndex + STEP.RIGHT, steps: 0 },
   up: { startingPos: startingIndex + STEP.UP, steps: 0 },
-  down: { startingPos: startingIndex + STEP.DOWN, steps: 0 },
+  // down: { startingPos: startingIndex + STEP.DOWN, steps: 0 },
 };
 
 let steps = 0;
@@ -38,40 +38,75 @@ for (const key in directions) {
     ans = direction.steps;
   }
 }
-console.log(mazePath);
-let a = 0;
+console.log(directions);
+
+let accumulator = 0;
 const aux = [...inputFile];
-let isMaze = false;
 aux.forEach((char, i) => {
-  if (
-    mazePath.includes(i) &&
-    ["-", "7", "|", "J", "L", "S", "F"].includes(char)
-  ) {
-    isMaze = !isMaze;
-    return;
+  if (!mazePath.includes(i) && char != "\n") {
+    aux[i] = ".";
   }
-
-  // if (mazePath.includes(i) && char == "7") {
-  //   isMaze = !isMaze;
-  //   return;
-  // }
-
-  // if (mazePath.includes(i) && char == "F") {
-  //   isMaze = !isMaze;
-  //   return;
-  // }
-  // if (mazePath.includes(i) && char == "S") {
-  //   isMaze = !isMaze;
-  //   return;
-  // }
-
-  if (!mazePath.includes(i) && isMaze) {
-    // console.log(i);
-    a++;
+});
+const newInputFile = aux.join("");
+console.log(newInputFile);
+const toCheck: number[] = [];
+aux.forEach((char, i) => {
+  if (!mazePath.includes(i) && char != "\n") {
+    aux[i] = ".";
+    toCheck.push(i);
   }
 });
 
-console.log({ expectedResult: 291, result: a });
+const chars = ["-", "7", "|", "J", "L", "S", "F"];
+toCheck.forEach((i) => {
+  let crossingCounter = 0;
+
+  let temp = i;
+
+  let Lfound = false;
+  let Ffound = false;
+  while (newInputFile.charAt(temp) != "\n") {
+    switch (newInputFile.charAt(temp)) {
+      case "S":
+      case "|":
+        crossingCounter++;
+        break;
+
+      case "L":
+        Lfound = true;
+        break;
+      case "F":
+        Ffound = true;
+        break;
+      case "7":
+        if (Lfound) {
+          crossingCounter++;
+          Lfound = false;
+        }
+        if (Ffound) {
+          Ffound = false;
+        }
+        break;
+      case "J":
+        if (Lfound) {
+          Lfound = false;
+        }
+        if (Ffound) {
+          crossingCounter++;
+          Ffound = false;
+        }
+        break;
+    }
+    temp++;
+  }
+
+  if (crossingCounter % 2 != 0) {
+    accumulator++;
+    console.log(i, crossingCounter, accumulator);
+  }
+});
+
+console.log({ expectedResult: 579, result: accumulator });
 
 function runMaze(pos: number) {
   if (inputFile.charAt(pos) === "." || inputFile.charAt(pos) === "S") return;
