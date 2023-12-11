@@ -61,7 +61,60 @@ for (let x = 0; x < xLength; x++) {
 }
 console.log({ galaxies });
 
+const DIRECTIONS: { [key: string]: [number, number] } = {
+  UP: [-1, 0],
+  DOWN: [1, 0],
+  LEFT: [0, -1],
+  RIGHT: [0, 1],
+} as const;
+
+let visited: string[] = [];
+let steps = 0;
 for (const galaxy of galaxies) {
+  const startingPos = [galaxy.y, galaxy.x];
+  visited = [];
+  steps = 0;
+
+  runGrid(startingPos);
+  printGrid(grid);
+
+  console.log("galaxy", galaxy.id, steps);
+}
+
+function runGrid(pos: number[] | undefined) {
+  while (pos != undefined) {
+    visited.push(String(pos[0] + String(pos[1])));
+    // grid[pos[0]][pos[1]] = "V";
+    steps++;
+    pos = getNextPos(pos);
+  }
+  console.log();
+}
+
+function getNextPos(pos: number[]) {
+  const up = DIRECTIONS.UP;
+  if (canVisit(pos, up)) return [pos[0] + up[0], pos[1] + up[1]];
+
+  const down = DIRECTIONS.DOWN;
+  if (canVisit(pos, down)) return [pos[0] + down[0], pos[1] + down[1]];
+
+  const left = DIRECTIONS.LEFT;
+  if (canVisit(pos, left)) return [pos[0] + left[0], pos[1] + left[1]];
+
+  const right = DIRECTIONS.RIGHT;
+  if (canVisit(pos, right)) return [pos[0] + right[0], pos[1] + right[1]];
+
+  return undefined;
+}
+
+function canVisit(pos: number[], t: [number, number]) {
+  const nextY = pos[0] + t[0];
+  const nextX = pos[1] + t[1];
+  return (
+    grid[nextY] !== undefined &&
+    grid[nextY][nextX] !== undefined &&
+    !visited.includes(String(nextY) + String(nextX))
+  );
 }
 
 function printGrid(grid: string[][]) {
