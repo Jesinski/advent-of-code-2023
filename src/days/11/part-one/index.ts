@@ -45,10 +45,11 @@ const xLength = grid.length;
 console.log({ xLength: yLength, yLength: xLength });
 printGrid(grid);
 console.log({ expectedResult: 0, result: 0 });
-
+let targetNodes: string[] = [];
 for (let x = 0; x < xLength; x++) {
   for (let y = 0; y < yLength; y++) {
     if (grid[x][y] != ".") {
+      targetNodes.push(grid[x][y]);
       galaxies.push({
         id: grid[x][y],
         y: x,
@@ -77,13 +78,23 @@ for (const galaxy of galaxies) {
   unvisitedNodes = [];
 
   unvisitedNodes.push(...getUnvisited(startingPos));
-  console.log(unvisitedNodes);
+  // console.log(unvisitedNodes);
 
   while (unvisitedNodes.length > 0) {
     const next = (unvisitedNodes.shift() as string).split(",").map((e) => +e);
     steps++;
     // grid[next[0]][next[1]] = "V";
     // printGrid(grid);
+    if (targetNodes.includes(grid[next[0]][next[1]])) {
+      console.log(
+        "galaxy",
+        galaxy.id,
+        "found",
+        grid[next[0]][next[1]],
+        "in",
+        steps
+      );
+    }
 
     visited.push(String(next));
     unvisitedNodes.push(...getUnvisited(next));
