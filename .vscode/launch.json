@@ -5,7 +5,7 @@
       "name": "TS-Node",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "/home/jesinski/.nvm/versions/node/v20.9.0/bin/ts-node",
+      "runtimeExecutable": "/Users/jesinski/.nvm/versions/node/v20.14.0/bin/ts-node",
       "runtimeArgs": [
         "--transpile-only"
         // if you use esm
