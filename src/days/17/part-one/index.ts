@@ -1,8 +1,10 @@
 import { readFileSync } from "fs";
 import path from "path";
 import { MinHeap } from "./minHeap";
-const inputFile = readFileSync(path.join(__dirname, "input.txt"), "utf-8");
+const inputFile = readFileSync(path.join(__dirname, "../input.txt"), "utf-8");
 const matrix = inputFile.split("\n").map((e) => e.split("").map((e) => +e));
+let accumulator = 0;
+
 const directions = [
   [-1, 0],
   [0, 1],
@@ -15,60 +17,63 @@ function getKey(node: number[]) {
 
 const m = matrix.length;
 const n = matrix[0].length;
-// row, col, heatLoss, dirX, dirY, steps
+
 const toVisit = new MinHeap();
 toVisit.insert([0, 0, 0, 0, 0, 0]);
-const visited = new Map();
+const visited = new Set();
 
 while (toVisit.elements > 0) {
   const visiting = toVisit.removeMin();
   if (!visiting) {
     continue;
   }
-  const [row, column, heatLoss, dirX, dirY, steps] = visiting;
-  const key = getKey([row, column]);
+  const [heatLoss, row, column, dirRow, dirCol, steps] = visiting;
+
+  const key = getKey([row, column, dirRow, dirCol, steps]);
   if (visited.has(key)) {
-    const [lastSeenCounter] = visited.get(key);
-    if (heatLoss + matrix[row][column] > lastSeenCounter) {
-      continue;
+    continue;
+  }
+  visited.add(key);
+
+  if (row == m - 1 && column == n - 1) {
+    accumulator = heatLoss;
+    break;
+  }
+
+  if (steps < 3 && (dirRow != 0 || dirCol != 0)) {
+    const newRow = row + dirRow;
+    const newCol = column + dirCol;
+    if (newRow >= 0 && newRow < m && newCol >= 0 && newCol < n) {
+      toVisit.insert([
+        heatLoss + matrix[newRow][newCol],
+        newRow,
+        newCol,
+        dirRow,
+        dirCol,
+        steps + 1,
+      ]);
     }
   }
-  visited.set(key, [heatLoss + matrix[row][column]]);
-  for (const [dx, dy] of directions) {
-    const newRow = row + dx;
-    const newColumn = column + dy;
-    const newKey = getKey([newRow, newColumn]);
 
-    if (newRow >= 0 && newRow < m && newColumn >= 0 && newColumn < n) {
-      if (visited.has(newKey)) {
-        const [counter] = visited.get(newKey);
-        if (counter + matrix[row][column] < counter) {
-          visited.set(newKey, [counter + matrix[row][column]]);
-          toVisit.insert([
-            newRow,
-            newColumn,
-            counter + matrix[row][column],
-            dx,
-            dy,
-            steps + 1,
-          ]);
-        }
-      } else {
+  for (const [ndr, ndc] of directions) {
+    if (
+      (ndr != dirRow || ndc != dirCol) &&
+      (ndr != -dirRow || ndc != -dirCol)
+    ) {
+      const newRow = row + ndr;
+      const newCol = column + ndc;
+      if (newRow >= 0 && newRow < m && newCol >= 0 && newCol < n) {
         toVisit.insert([
+          heatLoss + matrix[newRow][newCol],
           newRow,
-          newColumn,
-          heatLoss + matrix[row][column],
-          dx,
-          dy,
-          steps + 1,
+          newCol,
+          ndr,
+          ndc,
+          1,
         ]);
       }
     }
   }
 }
 
-console.log(visited);
-// console.log(visited.get([m - 1, n - 1].join(",")));
-let accumulator = 0;
-
-console.log({ expectedResult: 0, result: accumulator });
+console.log({ expectedResult: 742, result: accumulator });
