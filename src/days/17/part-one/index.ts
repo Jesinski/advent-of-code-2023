@@ -14,10 +14,7 @@ function getKey(node: number[]) {
 }
 const m = matrix.length;
 const n = matrix[0].length;
-const dp = new Array(m + 1).fill([]).map(() => new Array(n + 1).fill(-1));
-dp[0][0] = 0;
-
-console.log(dp);
+// row, col, heatLoss
 const toVisit = [[0, 0, 0]];
 const visited = new Map();
 
@@ -26,12 +23,20 @@ while (toVisit.length > 0) {
   if (!visiting) {
     continue;
   }
-  const [row, column, counter] = visiting;
+  const [row, column, heatLoss] = visiting;
   const key = getKey([row, column]);
+  if (visited.has(key)) {
+    const [lastSeenCounter] = visited.get(key);
+    if (heatLoss + matrix[row][column] > lastSeenCounter) {
+      continue;
+    }
+  }
+  visited.set(key, [heatLoss + matrix[row][column]]);
   for (const [dx, dy] of directions) {
     const newRow = row + dx;
     const newColumn = column + dy;
     const newKey = getKey([newRow, newColumn]);
+
     if (newRow >= 0 && newRow < m && newColumn >= 0 && newColumn < n) {
       if (visited.has(newKey)) {
         const [counter] = visited.get(newKey);
@@ -40,13 +45,13 @@ while (toVisit.length > 0) {
           toVisit.push([newRow, newColumn, counter + matrix[row][column]]);
         }
       } else {
-        visited.set(newKey, [counter + matrix[row][column]]);
-        toVisit.push([newRow, newColumn, counter + matrix[row][column]]);
+        toVisit.push([newRow, newColumn, heatLoss + matrix[row][column]]);
       }
     }
   }
 }
-console.log(visited.get("2,2"));
+console.log(visited);
+console.log(visited.get([m - 1, n - 1].join(",")));
 let accumulator = 0;
 
 console.log({ expectedResult: 0, result: accumulator });
