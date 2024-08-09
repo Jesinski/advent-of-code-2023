@@ -47,7 +47,7 @@ export class MinHeap {
     const parent = Math.floor((index - 1) / 2);
     if (index <= 0) {
       return;
-    } else if (this.heap[parent][2] > this.heap[index][2]) {
+    } else if (this.heap[parent][0] > this.heap[index][0]) {
       const tmp = this.heap[parent];
       this.heap[parent] = this.heap[index];
       this.heap[index] = tmp;
@@ -60,10 +60,10 @@ export class MinHeap {
     const right = index * 2 + 2;
 
     let smallest = index;
-    if (this.elements > left && this.heap[smallest][2] > this.heap[left][2]) {
+    if (this.elements > left && this.heap[smallest][0] > this.heap[left][0]) {
       smallest = left;
     }
-    if (this.elements > right && this.heap[smallest][2] > this.heap[right][2]) {
+    if (this.elements > right && this.heap[smallest][0] > this.heap[right][0]) {
       smallest = right;
     }
     if (smallest != index) {
