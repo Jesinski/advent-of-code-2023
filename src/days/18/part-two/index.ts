@@ -14,41 +14,31 @@ for (const line of lines) {
   const direction = +hex.slice(hex.length - 1);
   inputs.push(["RDLU"[direction], units]);
 }
-
-const points = [];
-let r = 0;
-let c = 0;
+let prevRow = 0;
+let prevCol = 0;
+let area = 0;
 for (const input of inputs) {
   const [dir, units] = input;
-  accumulator += units;
+  let row = prevRow;
+  let col = prevCol;
   switch (dir) {
-    case "R":
-      c += units;
-      break;
-    case "L":
-      c -= units;
-      break;
     case "U":
-      r -= units;
+      row = prevRow - units;
       break;
     case "D":
-      r += units;
+      row = prevRow + units;
+      break;
+    case "L":
+      col = prevCol - units;
+      break;
+    case "R":
+      col = prevCol + units;
       break;
   }
-  points.unshift([r, c]);
+  area += prevCol * row - prevRow * col + units;
+  prevRow = row;
+  prevCol = col;
 }
+accumulator = area / 2 + 1;
 
-let sumX = 0;
-let sumY = 0;
-for (let i = 0; i < points.length; i++) {
-  const [currX, currY] = points[i];
-  const [nextX, nextY] = points[(i + 1) % points.length];
-  sumX += currX * nextY;
-  sumY += currY * nextX;
-}
-const sum = Math.abs(sumX - sumY);
-const area = sum / 2;
-accumulator = area + accumulator / 2 - 5;
-
-// 60612092439765 ans
 console.log({ expectedResult: 60612092439765, result: accumulator });
