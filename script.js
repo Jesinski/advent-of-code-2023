@@ -33,7 +33,10 @@ async function getInput(year, day) {
         "session=53616c7465645f5f3ffeb0a5ad9a80e0f26d1f58f7705fc1f19dc8c011166ba7cdd433c1db46a3d977589fedcdb5b4b37a451e77971422085a249b2ce919395a",
     },
   });
-  const input = await fetch(req).then((res) => res.text());
+  const input = await fetch(req).then(async (res) => {
+    const text = await res.text();
+    return text.slice(0, text.length - 1);
+  });
 
   const path = join(__dirname, `src/days/${day}/input.txt`);
   await writeFile(path, input)
