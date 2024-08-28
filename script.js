@@ -1,6 +1,8 @@
 const { argv } = require("node:process");
 const { writeFile, mkdir, cp } = require("node:fs/promises");
 const { join } = require("node:path");
+const { exec } = require("child_process");
+
 const SESSION = process.env.SESSION;
 
 (async () => {
@@ -18,6 +20,20 @@ const SESSION = process.env.SESSION;
     case "bp":
       await createFolderDay(year, day);
       await getInput(year, day);
+      break;
+    case "p1":
+    case "p2":
+      const DICT = { p1: "part-one", p2: "part-two" };
+      exec(
+        `ts-node src/${year}/days/${day}/${DICT[verb]}/index.ts`,
+        (error, stdout) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(stdout);
+        }
+      );
       break;
     default:
       console.log("Unknown verb", verb);
