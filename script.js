@@ -27,11 +27,11 @@ const SESSION = process.env.SESSION;
       exec(
         `ts-node src/${year}/days/${day}/${DICT[verb]}/index.ts`,
         (error, stdout) => {
+          console.log(stdout);
           if (error) {
             console.error(`exec error: ${error}`);
             return;
           }
-          console.log(stdout);
         }
       );
       break;
