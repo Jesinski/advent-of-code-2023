@@ -9,6 +9,6 @@
   },
   "scripts": {
     "lint": "npx eslint .",
-    "aoc": "node script.js"
+    "aoc": "node --env-file=.env script.js"
   }
 }
