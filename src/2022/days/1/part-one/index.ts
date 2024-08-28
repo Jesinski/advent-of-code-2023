@@ -16,4 +16,4 @@ for (let i = 0; i < lines.length; i++) {
 }
 accumulator = Math.max(accumulator, sum);
 
-console.log({ expectedResult: 0, result: accumulator });
+console.log({ expectedResult: 74394, result: accumulator });

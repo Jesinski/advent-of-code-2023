@@ -23,4 +23,4 @@ accumulator = elfs
   .slice(0, 3)
   .reduce((acc, val) => acc + val, 0);
 
-console.log({ expectedResult: 0, result: accumulator });
+console.log({ expectedResult: 212836, result: accumulator });
