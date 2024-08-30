@@ -40,7 +40,7 @@ for (const line of lines) {
   const wrong = +line[5][line[5].length - 1];
   monkeys.push(new Monkey(items, operation, value, correct, wrong));
 }
-const llm = divs.reduce((acc, val) => acc * val, 1);
+const lcm = divs.reduce((acc, val) => acc * val, 1);
 for (let i = 0; i < 10_000; i++) {
   for (let j = 0; j < monkeys.length; j++) {
     const monkey = monkeys[j];
@@ -53,7 +53,7 @@ for (let i = 0; i < 10_000; i++) {
       }
 
       item = calculateWorry(item, monkey.operation);
-      item = Math.floor(item % llm);
+      item = Math.floor(item % lcm);
 
       if (item % monkey.test.value == 0) {
         monkeys[monkey.test.correct].items.push(item);
